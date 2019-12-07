@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Trabalho CG</title>
+  <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"></script>
+  <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-proxy-event-component@2.1.0/dist/aframe-proxy-event-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-super-shooter-kit@1.0.1/dist/aframe-super-shooter-kit.min.js"></script>
+  <script src="https://unpkg.com/aframe-supercraft-loader@3.0.0/dist/aframe-supercraft-loader.min.js"></script>
+  <script src="https://unpkg.com/aframe-supercraft-thing@1.1.0/dist/aframe-supercraft-thing.min.js"></script>
+  <script src="components/enemy.js"></script>
+  <script>
+    AFRAME.registerComponent('click-to-shoot', {
+      init: function () {
+        document.body.addEventListener('mousedown', () => { this.el.emit('shoot'); });
+      }
+    });
+	
+	
+  </script>
+</head>
+    
+    <body>
+        <a-scene>		
+		
+		<a-entity camera wasd-controls look-controls>
+			<a-sound src="src: url(sounds/song.ogg)" autoplay="true" position="0 2 5" volume="0.8"></a-sound>
+		</a-entity>
+		
+    <!-- Explosion sound. -->
+    <a-entity id="commonExplosion" sound="src: #soundExplosion; poolSize: 15" position="0 1.6 0"></a-entity>
+
+    <!-- Hidden Supercraft container of objects. We pick out objects using `supercraft-thing`. -->
+    <a-entity id="supercraftThings" supercraft-loader="name: probable-representative; includeEnvironment: false" visible="false"></a-entity>
+	
+	    <a-entity id="startMessage"
+              supercraft-thing="from: #supercraftThings; name: thing28"
+              target
+              proxy-event__startenemies="event: die; to: .enemy; as: run"
+              proxy-event__playmusic="event: die; to: #music; as: playmusic"></a-entity>
+
+
+
+		
+		<a-entity environment="preset: forest; skyColor: #B22222; horizonColor: #808080; lighting: point; lightPosition: -1.2 1 -0.55; fog: 0.799; flatShading: true; playArea: 0.89; ground: hills; groundYScale: 10.3; groundColor: #1C1C1C; groundColor2: #1C1C1C; dressing: stones; dressingAmount: 300; dressingColor: #576037; dressingScale: 0.13; dressingVariance: 0.08 0.01 0.1; dressingOnPlayArea: 1"></a-entity>
+		<a-entity light="color:#A2A5AF; intensity:0.1" position="-1.93 2.781 -2.322"></a-entity>		  
+		
+        <a-assets>
+            <a-asset-item id="potato" src="models/potato.gltf"></a-asset-item>
+			<a-asset-item id="gun" src="models/sc.gltf"></a-asset-item>
+        </a-assets>
+		
+		<a-entity camera wasd-controls look-controls >
+			<a-entity gltf-model="#gun" position="0 0.3 -1" scale="0.006 0.006 0.006" rotation="0 -90 0" sound="src: url(sounds/xablau.wav); on:click"></a-entity>
+		</a-entity>
+		
+		<a-camera>
+			<a-cursor></a-cursor>
+		</a-camera>
+	<!--
+      LUA
+    -->
+	
+		<a-gltf-model src="models/moon.gltf" position="20 30 -50" scale="5 5 5"></a-gltf-model>
+    <!--
+      INIMIGOS
+    -->
+	<a-entity id="enemy14" gltf-model="#potato" position="-30 0.3 20" scale="5 5 5" class="enemy" enemy="type:1" target="static: false">
+      <a-entity sound="src: #soundEnemy1a; poolSize: 5"></a-entity>
+    </a-entity>
+    <a-entity id="enemy14" gltf-model="#potato" position="-30 0.3 -50" rotation="0 -90 0" scale="5 5 5" class="enemy" enemy="type:1" target="static: false">
+      <a-entity sound="src: #soundEnemy1a; poolSize: 5"></a-entity>
+    </a-entity>
+    <a-entity id="enemy14" gltf-model="#potato" position="-40 0.3 -10" rotation="0 -40 0" scale="5 5 5" class="enemy" enemy="type:1" target="static: false">
+      <a-entity sound="src: #soundEnemy1a; poolSize: 5"></a-entity>
+    </a-entity>
+    <a-entity id="enemy14" gltf-model="#potato" position="30 0.3 -30" rotation="0 180 0" scale="5 5 5" class="enemy" enemy="type:1" target="static: false" >
+      <a-entity sound="src: #soundEnemy1a; poolSize: 5"></a-entity>
+    </a-entity>
+
+    <!--
+      EXPLOSIONS created in Supercraft.
+      Link them with enemies in the enemy component using ID.
+    -->
+    <a-entity id="enemy14expl" supercraft-thing="from: #supercraftThings; name: thing31; resetOrigin: true; ignorePosition: true"></a-entity>	
+	
+        
+    <a-entity bullet="name: normal; speed: 70.0; poolSize: 20"
+              geometry="primitive: icosahedron; radius: 0.1;"
+              material="color: #b30000; emissiveIntensity: 0.5; emissive: #D3D3D3" >			  
+	</a-entity>
+	
+	<a-camera shooter="bullets: normal; activeBulletType: normal" click-to-shoot></a-camera>	
+		
+	<a-entity bullet="name: normal; speed: 80.0; poolSize: 20"
+              geometry="primitive: icosahedron; radius: 0.1;"
+              material="color: #b30000; emissiveIntensity: 0.5; emissive: #D3D3D3" >			  
+	</a-entity>
+	
+	<a-cylinder id="cil" color="crimson" length="0.1" height="0.4" radius="0.05" position="-23 7.5 25" rotation="90 45 -95">
+	<a-animation attribute="position" to="0 0.5 4" dur="750" repeat="indefinite" easing="linear"></a-animation>
+	</a-cylinder>
+
+	<a-cylinder id="cil" color="crimson" length="0.1" height="0.4" radius="0.05" position="-36 7.5 -45" rotation="0 -45 90">
+	<a-animation attribute="position" to="-4 0.5 0" dur="750" repeat="indefinite" easing="linear"></a-animation>
+	</a-cylinder>
+
+	<a-cylinder id="cil" color="crimson" length="0.1" height="0.4" radius="0.05" position="-40 7.5 -2" rotation="0 0 70">
+	<a-animation attribute="position" to="-4 0.5 0" dur="750" repeat="indefinite" easing="linear"></a-animation>
+	</a-cylinder>
+
+	<a-cylinder id="cil" color="crimson" length="0.1" height="0.4" radius="0.05" position="30 8.5 -40" rotation="0 40 90">
+	<a-animation attribute="position" to="-10 0.5 -10" dur="750" repeat="indefinite" easing="linear"></a-animation>
+	</a-cylinder>
+	
+    </a-scene>
+    </body>
+</html>
